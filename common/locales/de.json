@@ -45,6 +45,7 @@
       "expense": "Es sind noch keine Auslagen eingetragen. Füge eine hinzu.",
       "healthCareCost": "Du hast noch keine Krankenkosten eingereicht.",
       "searchX": "Kein Eintrag für '{X}' gefunden.",
+      "default": "Keine Einträge vorhanden.",
       "stage": "Es sind noch keine Etappen vorhanden. Füge eine hinzu."
     },
     "notAllowed": "Nicht erlaubt!",
@@ -259,6 +260,7 @@
     "approvedOn": "Genehmigt am",
     "approvedTravelReport": "Liste aller genehmigten Reisen",
     "arrival": "Ankunft",
+    "assign": "Zuordnen",
     "assignedProjects": "Zugewiesene Projekte",
     "auth": "Authentifizierung",
     "autoSelectAvailableAdvances": "Passende Vorschüsse automatisch auswählen",
@@ -288,6 +290,11 @@
     "comments": "Kommentare",
     "companyNumber": "Betriebsnummer",
     "completeReview": "Prüfung abschließen",
+    "confidence": {
+      "high": "Sicher",
+      "medium": "Unsicher",
+      "low": "Unlesbar"
+    },
     "configCateringRefund": "Einstellungen Verpflegungspauschalen",
     "configuration": "Konfiguration",
     "confirm": "Bestätigen",
@@ -329,6 +336,7 @@
     "dinner": "Abendessen",
     "disabled": "Deaktiviert",
     "disableReportType": "Abrechnungsarten deaktivieren",
+    "dismiss": "Verwerfen",
     "displaySettings": "Anzeigeeinstellungen",
     "distance": "Entfernung [km]",
     "distanceRefunds": "Entfernungspauschalen",
@@ -362,6 +370,8 @@
     "expenseReportName": "Name der Auslagenabrechnung",
     "expenseReports": "Auslagenabrechnungen",
     "expenses": "Auslagen",
+    "extractedData": "Erkannte Daten",
+    "extractionFailed": "Analyse fehlgeschlagen",
     "factorCateringLumpSum": "Faktor für die Verpflegungspauschalen",
     "factorCateringLumpSumExceptions": "Ausnahmen der Faktorisierung für die Verpflegungspauschalen",
     "factorOvernightLumpSum": "Faktor für die Übernachtungspauschalen",
@@ -473,6 +483,8 @@
     "password": "Passwort",
     "patientName": "Name des Leistungsempfängers",
     "pdfFormFieldName": "Name des Form Fields für das PDF",
+    "pendingReceipt": "Beleg im Posteingang",
+    "pendingReceipts": "Posteingang",
     "place": "Ort",
     "preciseServiceDescription": "Genaue Leistungsbeschreibung",
     "preventOwnersFromDeletingReportsAfterReviewCompleted": "Verhindern, dass Eigentümer Abrechnungen nach Abschluss der Überprüfung löschen",
@@ -571,6 +583,8 @@
     "uploadFromPhone": "Vom Handy hochladen",
     "uploading": "Wird hochgeladen 🔄",
     "uploadLink": "Upload Link",
+    "uploadReceipt": "Beleg hochladen – hier klicken oder Datei ablegen",
+    "uploadReceiptHint": "JPG, PNG oder PDF",
     "uploadTokenExpireAfterSeconds": "Uploadtoken Ablaufzeit [Sekunden]",
     "useDifferentProject": "Anderes Projekt auswählen",
     "used": "Verwendet",
@@ -710,6 +724,16 @@
       "lastParagraph": "Zum Anmelden benötigst du lediglich deine E-Mail Adresse.\nDrücke auf 'Mit E-Mail anmelden', gib deine E-Mail Adresse ein und dann bekommst du eine E-Mail mit einem Link der dich direkt einloggt.",
       "paragraph": "Herzlich willkommen bei @:{'headlines.title'}@:{'headlines.emoji'}. Hier kannst du all deine Abrechnungen einreichen.",
       "subject": "Willkommen bei @:{'headlines.title'}@:{'headlines.emoji'}"
+    },
+    "pendingReceipt": {
+      "EXTRACTED": {
+        "subject": "🧾 Beleg analysiert",
+        "paragraph": "Der Beleg '{X}' wurde analysiert und kann jetzt zugeordnet werden."
+      },
+      "FAILED": {
+        "subject": "⚠️ Beleg-Analyse fehlgeschlagen",
+        "paragraph": "Der Beleg '{X}' konnte nicht analysiert werden. Du kannst ihn trotzdem manuell zuordnen."
+      }
     },
     "regards": "Beste Grüße",
     "toInsurance": {

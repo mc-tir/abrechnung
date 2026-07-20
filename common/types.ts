@@ -291,6 +291,31 @@ export interface Token<idType extends _id = _id, dataType extends binary = binar
   files: DocumentFile<idType, dataType>[]
 }
 
+export type PendingReceiptTargetType = 'expenseReport' | 'travel' | 'healthCareCost'
+export type PendingReceiptExtractionStatus = 'pending' | 'done' | 'failed'
+
+export interface ExtractedReceiptData {
+  date?: string
+  amount?: number
+  currency?: string
+  merchant?: string
+  description?: string
+  category?: string
+  confidence?: 'high' | 'medium' | 'low'
+}
+
+export interface PendingReceipt<idType extends _id = _id> {
+  _id: idType
+  owner: idType
+  file: idType
+  fileName: string
+  fileType: DocumentFileType
+  extractionStatus: PendingReceiptExtractionStatus
+  extracted?: ExtractedReceiptData
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
 export interface Contact {
   email: string
   name: Name

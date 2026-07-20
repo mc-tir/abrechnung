@@ -20,7 +20,7 @@ const FRONTEND_URL = ENV.VITE_FRONTEND_URL
 const IS_DEV_SERVICE_WORKER = self.location.pathname.endsWith('/dev-sw.js') || self.location.search.includes('dev-sw')
 
 // Routes denylist for SPA navigation
-const denylist = []
+const denylist = [/^\/share-target/]
 if (BACKEND_URL.startsWith(FRONTEND_URL)) {
   const backendPath = escapeRegExp(BACKEND_URL.replace(FRONTEND_URL, ''))
   denylist.push(
@@ -31,6 +31,29 @@ if (BACKEND_URL.startsWith(FRONTEND_URL)) {
     new RegExp(`^${backendPath}/docs`)
   )
 }
+
+// -----------------------------------------------------------------------------
+// Share Target (Android PWA share menu)
+// -----------------------------------------------------------------------------
+self.addEventListener('fetch', (event) => {
+  const url = new URL(event.request.url)
+  if (url.pathname === '/share-target' && event.request.method === 'POST') {
+    event.respondWith(
+      (async () => {
+        const formData = await event.request.formData()
+        const file = formData.get('receipt') as File | null
+        if (file) {
+          const cache = await caches.open('pending-shares')
+          await cache.put(
+            '/pending-share-file',
+            new Response(file, { headers: { 'Content-Type': file.type, 'X-Filename': file.name } })
+          )
+        }
+        return Response.redirect('/pending-receipts?fromShare=1', 303)
+      })()
+    )
+  }
+})
 
 // -----------------------------------------------------------------------------
 // Install & Activate
@@ -101,7 +124,17 @@ async function networkFirstWithDBFallback({ request }: { request: Request }) {
 self.addEventListener('push', (event) => {
   const data = parsePushData(event)
   if (!data) return
-  event.waitUntil(self.registration.showNotification(data.title, { body: data.body || '', data: { url: data.url } }))
+  event.waitUntil(
+    Promise.all([
+      self.registration.showNotification(data.title, { body: data.body || '', data: { url: data.url } }),
+      // let open tabs react to the push (e.g. refresh the pending receipts inbox)
+      self.clients.matchAll({ type: 'window' }).then((clients) => {
+        for (const client of clients) {
+          client.postMessage({ type: 'push', url: data.url })
+        }
+      })
+    ])
+  )
 })
 
 self.addEventListener('notificationclick', (event) => {

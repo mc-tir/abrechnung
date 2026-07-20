@@ -311,9 +311,9 @@ import type { ValidationResult } from 'abrechnung-common/report/validator.js'
 import { combineTravelValidationResults } from 'abrechnung-common/travel/validator.js'
 import { placeToSimpleString, refNumberToString } from 'abrechnung-common/utils/scripts.js'
 import type { PropType } from 'vue'
-import { computed, ref, useTemplateRef } from 'vue'
+import { computed, onMounted, ref, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import API from '@/api.js'
 import AddUpTable from '@/components/elements/AddUpTable.vue'
 import ErrorBanner, { RequestError } from '@/components/elements/ErrorBanner.vue'
@@ -324,6 +324,7 @@ import StatePipeline from '@/components/elements/StatePipeline.vue'
 import CTextArea from '@/components/elements/TextArea.vue'
 import TooltipElement from '@/components/elements/TooltipElement.vue'
 import ValidationIssuesAlert from '@/components/elements/ValidationIssuesAlert.vue'
+import { finishPendingReceiptAssignment, PendingReceiptPrefill, readPendingReceiptQuery } from '@/components/pendingReceipt/prefill.js'
 import { getHasUnusedAdvances } from '@/components/scripts.js'
 import LumpSumEditor from '@/components/travel/elements/LumpSumEditor.vue'
 import TravelTable from '@/components/travel/elements/TravelTable.vue'
@@ -350,6 +351,7 @@ const props = defineProps({
 })
 
 const router = useRouter()
+const route = useRoute()
 const { t } = useI18n()
 
 const travel = ref<Travel<string>>({} as Travel<string>)
@@ -648,6 +650,10 @@ async function postExpense(expense: Partial<TravelExpense>) {
   })
   modalFormIsLoading.value = false
   if (result.ok) {
+    if (pendingReceipt) {
+      await finishPendingReceiptAssignment(pendingReceipt)
+      pendingReceipt = null
+    }
     setTravel(result.ok)
     resetAndHide()
   }
@@ -712,6 +718,15 @@ try {
   router.push({ path: props.parentPages[props.parentPages.length - 1].link })
 }
 const examinerMails = await getExaminerMails()
+
+let pendingReceipt: PendingReceiptPrefill | null = null
+
+onMounted(async () => {
+  pendingReceipt = await readPendingReceiptQuery(route, router)
+  if (pendingReceipt) {
+    showModal('add', 'expense', pendingReceipt.expense)
+  }
+})
 </script>
 
 <style></style>

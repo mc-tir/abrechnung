@@ -76,6 +76,13 @@
         </li>
       </template>
 
+      <li class="nav-item d-flex align-items-center me-2">
+        <router-link to="/pending-receipts" class="nav-link link-body-emphasis d-flex align-items-center">
+          <i class="fs-4 bi bi-inbox"></i>
+          <span class="ms-1">{{ t('labels.pendingReceipts') }}</span>
+          <span v-if="pendingReceiptCount > 0" class="badge bg-danger ms-1">{{ pendingReceiptCount }}</span>
+        </router-link>
+      </li>
       <li class="nav-item dropdown me-2">
         <a class="nav-link link-body-emphasis d-flex align-items-center dropdown-toggle clickable" data-bs-toggle="dropdown" role="button">
           <i class="fs-4 bi bi-person-circle"></i>
@@ -118,11 +125,11 @@
   </div>
   <div class="position-relative">
     <AlertComponent />
-    <router-view :class="loadState === 'LOADED' ? 'd-block' : 'd-none'" v-slot="{ Component }">
+    <router-view :class="loadState === 'LOADED' ? 'd-block' : 'd-none'" v-slot="{ Component, route }">
       <template v-if="Component">
         <Suspense>
           <template #default>
-            <component :is="Component"></component>
+            <component :is="Component" :key="route.path"></component>
           </template>
           <template #fallback></template>
         </Suspense>
@@ -156,7 +163,7 @@ import {
   User
 } from 'abrechnung-common/types.js'
 import { getById, refStringToNumber } from 'abrechnung-common/utils/scripts.js'
-import { computed, onMounted, ref, useTemplateRef } from 'vue'
+import { computed, onMounted, ref, useTemplateRef, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import API from '@/api.js'
@@ -171,6 +178,7 @@ import ReadOnlyBanner from '@/components/elements/ReadOnlyBanner.vue'
 import StateBadge from '@/components/elements/StateBadge.vue'
 import TableElement from '@/components/elements/TableElement.vue'
 import APP_LOADER from '@/dataLoader.js'
+import { eventBus } from '@/eventBus.js'
 import { getRouteForReport, isMobile, subscribeToPush } from '@/helper.js'
 import { clearStore } from './indexedDB'
 
@@ -231,6 +239,25 @@ type SearchResult = { state: AnyState; _id: string; name: string; owner: IdDocum
 const searchInput = ref('')
 const searchResult = ref([] as SearchResult[])
 const loadingSearch = ref(false)
+
+const pendingReceiptCount = ref(0)
+async function loadPendingReceiptCount() {
+  if (!APP_DATA.value) return
+  const result = await API.getter<unknown[]>('pendingReceipt', { limit: 1 }, {}, false)
+  if (result.ok) {
+    pendingReceiptCount.value = result.ok.meta.count
+  }
+}
+watch(
+  loadState,
+  (state) => {
+    if (state === 'LOADED') {
+      loadPendingReceiptCount()
+    }
+  },
+  { immediate: true }
+)
+eventBus.addEventListener('pendingReceipts-changed', loadPendingReceiptCount)
 
 const searchResultModalRef = useTemplateRef('searchResultModal')
 

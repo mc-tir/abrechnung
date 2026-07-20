@@ -278,9 +278,9 @@ import {
 } from 'abrechnung-common/types.js'
 import { getById, getTotalTotal, mailToLink, refNumberToString } from 'abrechnung-common/utils/scripts.js'
 import type { PropType } from 'vue'
-import { computed, ref, useTemplateRef } from 'vue'
+import { computed, onMounted, ref, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import API from '@/api.js'
 import AddUpTable from '@/components/elements/AddUpTable.vue'
 import HelpButton from '@/components/elements/HelpButton.vue'
@@ -293,6 +293,7 @@ import TooltipElement from '@/components/elements/TooltipElement.vue'
 import ValidationIssuesAlert from '@/components/elements/ValidationIssuesAlert.vue'
 import ExpenseForm from '@/components/healthCareCost/forms/ExpenseForm.vue'
 import HealthCareCostForm from '@/components/healthCareCost/forms/HealthCareCostForm.vue'
+import { finishPendingReceiptAssignment, PendingReceiptPrefill, readPendingReceiptQuery } from '@/components/pendingReceipt/prefill.js'
 import { getHasUnusedAdvances } from '@/components/scripts.js'
 import APP_LOADER from '@/dataLoader.js'
 import { formatter } from '@/formatter.js'
@@ -316,6 +317,7 @@ const props = defineProps({
 })
 
 const router = useRouter()
+const route = useRoute()
 const { t } = useI18n()
 
 const healthCareCost = ref<HealthCareCost<string>>({} as HealthCareCost<string>)
@@ -447,6 +449,10 @@ async function postExpense(expense: Partial<Expense>) {
   })
   modalFormIsLoading.value = false
   if (result.ok) {
+    if (pendingReceipt) {
+      await finishPendingReceiptAssignment(pendingReceipt)
+      pendingReceipt = null
+    }
     setHealthCareCost(result.ok)
     resetAndHide()
   }
@@ -567,4 +573,13 @@ if (props.endpointPrefix === 'examine/') {
 }
 
 const examinerMails = await getExaminerMails()
+
+let pendingReceipt: PendingReceiptPrefill | null = null
+
+onMounted(async () => {
+  pendingReceipt = await readPendingReceiptQuery(route, router)
+  if (pendingReceipt) {
+    showModal('add', 'expense', pendingReceipt.expense)
+  }
+})
 </script>

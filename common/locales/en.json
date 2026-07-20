@@ -45,6 +45,7 @@
       "expense": "There are no expenses yet. Add one!",
       "healthCareCost": "You have not submitted any health care costs yet.",
       "searchX": "Nothing found for '{X}'.",
+      "default": "No entries found.",
       "stage": "There are no stages yet. Add one!"
     },
     "notAllowed": "Not allowed!",
@@ -259,6 +260,7 @@
     "approvedOn": "Approved on",
     "approvedTravelReport": "Approved Travels Report",
     "arrival": "Arrival",
+    "assign": "Assign",
     "assignedProjects": "Assigned Projects",
     "auth": "Authentication",
     "autoSelectAvailableAdvances": "Automatically select matching advances",
@@ -288,6 +290,11 @@
     "comments": "Comments",
     "companyNumber": "Company number",
     "completeReview": "Complete Review",
+    "confidence": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
     "configCateringRefund": "Config catering refund",
     "configuration": "Configuration",
     "confirm": "Confirm",
@@ -329,6 +336,7 @@
     "dinner": "Dinner",
     "disabled": "Disabled",
     "disableReportType": "Deactivate application types",
+    "dismiss": "Dismiss",
     "displaySettings": "Display Settings",
     "distance": "Distance [km]",
     "distanceRefunds": "Distance refunds",
@@ -362,6 +370,8 @@
     "expenseReportName": "Expense report name",
     "expenseReports": "Expense Reports",
     "expenses": "Expenses",
+    "extractedData": "Extracted Data",
+    "extractionFailed": "Analysis failed",
     "factorCateringLumpSum": "Factor for the catering lump sums",
     "factorCateringLumpSumExceptions": "Exceptions to the factorization of the catering lump sums",
     "factorOvernightLumpSum": "Factor for the overnight lump sums",
@@ -473,6 +483,8 @@
     "password": "Password",
     "patientName": "Patient name",
     "pdfFormFieldName": "Form Field Name for PDF",
+    "pendingReceipt": "Pending Receipt",
+    "pendingReceipts": "Inbox",
     "place": "Place",
     "preciseServiceDescription": "Precise service description",
     "preventOwnersFromDeletingReportsAfterReviewCompleted": "Prevent owners from deleting reports after the review is completed",
@@ -571,6 +583,8 @@
     "uploadFromPhone": "Upload from Phone",
     "uploading": "Uploading 🔄",
     "uploadLink": "Upload Link",
+    "uploadReceipt": "Upload receipt – click here or drop a file",
+    "uploadReceiptHint": "JPG, PNG or PDF",
     "uploadTokenExpireAfterSeconds": "Upload token expiration time [seconds]",
     "useDifferentProject": "Use different project",
     "used": "Used",
@@ -710,6 +724,16 @@
       "lastParagraph": "To log in, all you need is your email address.\nClick on 'Sign in with Email', enter your email address and you will receive an email with a link that will log you in directly when you click on it.",
       "paragraph": "Welcome to @:{'headlines.title'}@:{'headlines.emoji'}. Here you can submit all your expenses.",
       "subject": "Welcome to @:{'headlines.title'}@:{'headlines.emoji'}"
+    },
+    "pendingReceipt": {
+      "EXTRACTED": {
+        "subject": "🧾 Receipt analyzed",
+        "paragraph": "The receipt '{X}' has been analyzed and is ready to be assigned."
+      },
+      "FAILED": {
+        "subject": "⚠️ Receipt analysis failed",
+        "paragraph": "The receipt '{X}' could not be analyzed. You can still assign it manually."
+      }
     },
     "regards": "Best Regards",
     "toInsurance": {

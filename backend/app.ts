@@ -14,6 +14,7 @@ import i18n from './i18n.js'
 import { closeIntegrationQueue } from './integrations/queue.js'
 import { logger } from './logger.js'
 import { checkForMigrations } from './migrations.js'
+import { closeReceiptExtractionQueue } from './workers/receiptExtraction.js'
 
 export default async function () {
   await connectDB()
@@ -102,5 +103,6 @@ export default async function () {
 
 export async function shutdown() {
   await closeIntegrationQueue()
+  await closeReceiptExtractionQueue()
   await disconnectDB()
 }

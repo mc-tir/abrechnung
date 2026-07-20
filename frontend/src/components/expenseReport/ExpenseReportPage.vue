@@ -283,9 +283,9 @@
 import { type ValidationResult, Validator } from 'abrechnung-common/report/validator.js'
 import { Expense, ExpenseReport, ExpenseReportSimple, ExpenseReportState, State, UserSimple } from 'abrechnung-common/types.js'
 import { convertGermanDateToHTMLDate, getById, refNumberToString } from 'abrechnung-common/utils/scripts.js'
-import { computed, PropType, ref, useTemplateRef } from 'vue'
+import { computed, onMounted, PropType, ref, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import API from '@/api.js'
 import AddUpTable from '@/components/elements/AddUpTable.vue'
 import Badge from '@/components/elements/Badge.vue'
@@ -300,6 +300,7 @@ import TooltipElement from '@/components/elements/TooltipElement.vue'
 import ValidationIssuesAlert from '@/components/elements/ValidationIssuesAlert.vue'
 import ExpenseForm from '@/components/expenseReport/forms/ExpenseForm.vue'
 import ExpenseReportForm from '@/components/expenseReport/forms/ExpenseReportForm.vue'
+import { finishPendingReceiptAssignment, PendingReceiptPrefill, readPendingReceiptQuery } from '@/components/pendingReceipt/prefill.js'
 import { getHasUnusedAdvances } from '@/components/scripts.js'
 import APP_LOADER from '@/dataLoader.js'
 import { formatter } from '@/formatter.js'
@@ -322,6 +323,7 @@ const props = defineProps({
 })
 
 const router = useRouter()
+const route = useRoute()
 const { t } = useI18n()
 
 const expenseReport = ref<ExpenseReport<string>>({} as ExpenseReport<string>)
@@ -459,6 +461,10 @@ async function postExpense(expense: Partial<Expense>, closeModal = true, showAle
   )
   modalFormIsLoading.value = false
   if (result.ok) {
+    if (pendingReceipt) {
+      await finishPendingReceiptAssignment(pendingReceipt)
+      pendingReceipt = null
+    }
     setExpenseReport(result.ok)
     if (closeModal) {
       resetAndHide()
@@ -557,6 +563,15 @@ function getPrev(expense: Expense<string>): Expense<string> | undefined {
 function goToSettings(expenseReport: ExpenseReport<string>) {
   showModal('edit', 'expenseReport', expenseReport)
 }
+
+let pendingReceipt: PendingReceiptPrefill | null = null
+
+onMounted(async () => {
+  pendingReceipt = await readPendingReceiptQuery(route, router)
+  if (pendingReceipt) {
+    showModal('add', 'expense', pendingReceipt.expense)
+  }
+})
 
 try {
   await getExpenseReport()

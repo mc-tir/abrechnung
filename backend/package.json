@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.104.2",
     "abrechnung-common": "file:../common",
     "axios": "^1.17.0",
     "bullmq": "^5.78.0",
